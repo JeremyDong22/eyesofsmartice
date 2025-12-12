@@ -1,0 +1,35 @@
+# ASE Restaurant Surveillance System - Python Dependencies
+# Production deployment requirements for RTX 3060 Linux machine
+# Last updated: 2025-11-16
+
+# Computer Vision & Video Processing
+opencv-python==4.8.1.78         # Video capture, RTSP streaming, image processing
+numpy==1.24.3                   # Array operations, numerical computing
+
+# AI/ML - Object Detection & Classification
+ultralytics==8.0.196            # YOLOv8/v11 models (person detection, staff classification)
+torch>=2.0.0                    # PyTorch backend for YOLO models (CUDA-enabled)
+torchvision>=0.15.0             # Vision utilities for PyTorch
+
+# GPU Monitoring & Management
+nvidia-ml-py3==7.352.0          # pynvml - NVIDIA GPU monitoring, dynamic worker scaling
+
+# Cloud Database & Storage
+supabase==2.0.3                 # Supabase client for cloud sync (hourly database upload)
+
+# Image Processing
+pillow==10.0.1                  # Image manipulation, screenshot saving
+
+# System Requirements:
+# - Python 3.7+
+# - NVIDIA GPU with CUDA support (RTX 3060 recommended)
+# - CUDA 11.8+ and cuDNN installed
+# - ffmpeg for H.264/H.265 video encoding
+
+# Installation:
+# pip install -r requirements.txt
+
+# Notes:
+# - torch and torchvision should be installed with CUDA support
+# - For CUDA 11.8: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# - Verify GPU support: python -c "import torch; print(torch.cuda.is_available())"

@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-16",
+  "capture_windows": [
+    {
+      "name": "lunch",
+      "start_hour": 11,
+      "start_minute": 30,
+      "end_hour": 14,
+      "end_minute": 0,
+      "description": "Lunch service - 11:30 AM to 2:00 PM"
+    },
+    {
+      "name": "dinner",
+      "start_hour": 17,
+      "start_minute": 30,
+      "end_hour": 22,
+      "end_minute": 0,
+      "description": "Dinner service - 5:30 PM to 10:00 PM"
+    }
+  ],
+  "processing_window": {
+    "start_hour": 0,
+    "end_hour": 23,
+    "description": "Video processing - 12:00 AM to 11:00 PM"
+  },
+  "analysis_settings": {
+    "fps": 5,
+    "person_confidence_threshold": 0.3,
+    "staff_confidence_threshold": 0.5,
+    "min_person_size": 40,
+    "state_debounce_seconds": 1.0
+  },
+  "monitoring_intervals": {
+    "disk_check_seconds": 3600,
+    "gpu_check_seconds": 300,
+    "db_sync_seconds": 3600,
+    "health_check_seconds": 1800
+  },
+  "detection_mode": "combined",
+  "supabase_sync_enabled": true,
+  "monitoring_enabled": true,
+  "auto_restart_enabled": true
+}

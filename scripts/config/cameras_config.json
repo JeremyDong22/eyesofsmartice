@@ -1,0 +1,18 @@
+{
+  "camera_35": {
+    "ip": "202.168.40.35",
+    "port": 554,
+    "username": "admin",
+    "password": "123456",
+    "stream_path": "/media/video1",
+    "resolution": [
+      2592,
+      1944
+    ],
+    "fps": 20,
+    "division_name": "A\u533a",
+    "location_id": "ybl_mianyang",
+    "enabled": true,
+    "notes": "Front area camera - main dining hall"
+  }
+}

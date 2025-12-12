@@ -1,0 +1,14 @@
+[
+  {
+    "camera_id": "camera_35",
+    "location_id": "mianyang_yebailing_1958",
+    "camera_name": "camera 35 for testing",
+    "camera_ip_address": "202.168.40.35",
+    "rtsp_endpoint": "101",
+    "camera_type": "UNV",
+    "resolution": null,
+    "division_name": "B",
+    "status": "active",
+    "connection_status": "failed"
+  }
+]

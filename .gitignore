@@ -1,0 +1,95 @@
+# ASE Surveillance System - Production RTX 3060
+# .gitignore for clean repository
+
+# ============================================================================
+# Python
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# ============================================================================
+# macOS
+# ============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ============================================================================
+# Test Files (Per User Policy: Delete test files after use)
+# ============================================================================
+tests/
+test_*.py
+*_test.py
+test-*/
+*-test/
+
+# ============================================================================
+# Runtime Files
+# ============================================================================
+*.pid
+*.log.*
+surveillance_service.pid
+
+# ============================================================================
+# IDE / Editors
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# Runtime Data Directories (keep structure, ignore content)
+# ============================================================================
+# Videos (raw captures)
+videos/*
+!videos/.gitkeep
+
+# Results (processed videos)
+results/*
+!results/.gitkeep
+
+# Logs (service logs)
+logs/*.log
+logs/*.log.*
+!logs/.gitkeep
+
+# Backups (database backups)
+backups/*
+!backups/.gitkeep
+
+# Screenshots (detection screenshots) - partial ignore
+db/screenshots/*/*/*
+!db/screenshots/.gitkeep
+
+# ============================================================================
+# Configuration (Sensitive)
+# ============================================================================
+# Uncomment if you want to ignore config files with credentials
+# scripts/config/cameras_config.json
+
+# ============================================================================
+# Temporary Files
+# ============================================================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+*.old
+
+# ============================================================================
+# Models (Large files - use Git LFS if needed)
+# ============================================================================
+# Uncomment if models should not be in git
+# models/*.pt
+# models/*.pth
+# models/*.onnx
