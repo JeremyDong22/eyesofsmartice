@@ -54,8 +54,8 @@ class Colors:
     CYAN = '\033[0;36m'
     MAGENTA = '\033[0;35m'
 
-# Project paths
-PROJECT_ROOT = Path(__file__).parent
+# Project paths (file is in scripts/deployment/, go up 2 levels to root)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 CONFIG_DIR = SCRIPTS_DIR / "config"
 DB_PATH = PROJECT_ROOT / "db" / "detection_data.db"

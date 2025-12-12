@@ -2,14 +2,36 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated:** 2025-11-16
+**Last Updated:** 2025-12-13
 
 ## Documentation Structure
 
-- **CLAUDE.md** (this file) - System overview, deployment guide, and configuration reference
-- **scripts/STRUCTURE.md** - Detailed scripts organization and navigation guide
+```
+eyesofsmartice/
+├── CLAUDE.md              # This file - project overview and policies
+├── scripts/
+│   └── CLAUDE.md          # Scripts index → references all script subdirectories
+└── db/
+    └── CLAUDE.md          # Database schema and cloud sync
+```
+
+**Navigation:**
+- **scripts/CLAUDE.md** - Index for all script documentation (video_processing, deployment, orchestration, etc.)
 - **db/CLAUDE.md** - Cloud database schema, Supabase architecture, and sync details
-- **scripts/deployment/DEPLOYMENT_GUIDE.md** - Step-by-step deployment procedures
+
+---
+
+## Documentation Update Policy
+
+**IMPORTANT:** When modifying code, you MUST update the corresponding CLAUDE.md documentation files.
+
+Update chain:
+1. **Code change** → Update the CLAUDE.md in the same directory (e.g., `scripts/video_processing/CLAUDE.md`)
+2. **New feature/algorithm** → Document in relevant CLAUDE.md
+3. **Cross-directory impact** → Update `scripts/CLAUDE.md` index if needed
+4. **Major architecture change** → Update root `CLAUDE.md`
+
+This ensures documentation stays in sync with the codebase.
 
 ---
 
@@ -19,78 +41,80 @@ Production deployment folder for RTX 3060 machine at 野百灵火锅店 (Ye Bai 
 
 **Purpose:** Real-time restaurant surveillance system using computer vision to monitor table states and staff coverage across multiple camera feeds.
 
-## Quick Start - New Deployment (v4.0)
+## Quick Start - New Deployment (v4.1)
 
-### **Unified Entry Point**
+### **One-Command Deployment**
 
 ```bash
-cd /path/to/production/RTX_3060
+cd /path/to/eyesofsmartice
 
-# Main entry point (interactive menu)
-python3 main.py
-
-# Or direct commands
-python3 main.py --configure    # Configure system
-python3 main.py --start        # Start service (dev mode)
+# One command does everything
+sudo ./deploy.sh
 ```
 
-**What main.py does:**
-- Interactive menu for all operations
-- Guides you through configuration
-- Shows production deployment instructions
-- Simple, clear interface
+**What deploy.sh does:**
+- Configure system (cameras, ROI, settings)
+- Install systemd daemon (auto-restart)
+- Install cron jobs (recording, processing, cleanup)
+- Add daily reboot at 23:00
+- Start the service
+
+### **Root Directory Scripts**
+
+| Script | Purpose |
+|--------|---------|
+| `deploy.sh` | One-command full deployment |
+| `main.py` | Configuration menu |
+| `restart.sh` | Quick service restart |
 
 ---
 
 ## Complete Deployment Workflow
 
-### **Step 1: System Configuration (First Time Only)**
+### **One-Command Deployment (Recommended)**
 
 ```bash
-# Interactive configuration wizard
+sudo ./deploy.sh
+```
+
+This single command does everything:
+- ✅ Configure system (cameras, ROI, settings)
+- ✅ Install systemd daemon (auto-restart on crash)
+- ✅ Install cron jobs (recording, processing, cleanup)
+- ✅ Add daily reboot at 23:00 (system health)
+- ✅ Start the service
+
+### **Manual Step-by-Step (Alternative)**
+
+```bash
+# Step 1: Configure
 python3 main.py --configure
 
-# OR directly call the configuration script
-python3 scripts/deployment/initialize_restaurant.py
-```
+# Step 2: Install systemd
+sudo bash scripts/deployment/install_systemd.sh
 
-**What gets configured:**
-- ✅ Restaurant location (city, name, commercial area)
-- ✅ Camera management (add/edit/delete cameras with full credentials)
-- ✅ Camera connection testing (RTSP validation)
-- ✅ ROI configuration (interactive table/region drawing)
-- ✅ System settings (capture hours, processing windows)
+# Step 3: Install cron jobs
+./scripts/deployment/install_cron_jobs.sh --install
 
-**This step does NOT start the service** - it only configures!
-
-### **Step 2: Install Systemd Service (Production)**
-
-```bash
-# Install systemd service (one-time setup)
-sudo cp scripts/deployment/ase_surveillance.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable ase_surveillance
-```
-
-### **Step 3: Start Service**
-
-```bash
-# Production (recommended)
+# Step 4: Start service
 sudo systemctl start ase_surveillance
+```
 
-# Management commands
+### **Management Commands**
+
+```bash
 sudo systemctl status ase_surveillance   # Check status
 sudo systemctl stop ase_surveillance     # Stop
 sudo systemctl restart ase_surveillance  # Restart
+./restart.sh                             # Quick restart with logs
 sudo journalctl -u ase_surveillance -f   # View logs
 ```
 
-**Systemd Features:**
-- ✅ Auto-restart on crash
-- ✅ Auto-start on boot
-- ✅ System-level resource management
-- ✅ Integrated logging
-- ✅ No PID file conflicts
+**Protection Layers:**
+- ✅ Auto-restart on crash (systemd)
+- ✅ Auto-start on boot (systemd enable)
+- ✅ Daily reboot at 23:00 (system health)
+- ✅ Integrated logging (journalctl)
 
 ---
 
@@ -100,10 +124,11 @@ sudo journalctl -u ase_surveillance -f   # View logs
 
 | File | Purpose | When to Use |
 |------|---------|-------------|
-| `main.py` | Unified entry point | Interactive menu for all operations |
-| `scripts/deployment/initialize_restaurant.py` | Complete configuration wizard | First-time setup or reconfiguration |
-| `interactive_start.py` | ~~Legacy~~ (kept for reference) | ~~Use main.py instead~~ |
-| `start.sh` | ~~Legacy~~ (deprecated) | ~~Use systemd instead~~ |
+| `deploy.sh` | One-command production deployment | `sudo ./deploy.sh` - does everything |
+| `main.py` | Configuration entry point | Interactive configuration menu |
+| `restart.sh` | Quick service restart | `./restart.sh` - restart daemon |
+| `scripts/deployment/initialize_restaurant.py` | Configuration wizard | Called by main.py |
+| `scripts/deployment/interactive_start.py` | Library (InteractiveStartup class) | Imported by initialize_restaurant.py |
 
 ### **Service Management**
 
@@ -189,11 +214,14 @@ sudo journalctl -u ase_surveillance -f   # View logs
 ## Directory Structure
 
 ```
-production/RTX_3060/
-├── start.py             # 🚀 MAIN ENTRY POINT - Start here!
+eyesofsmartice/
+├── deploy.sh            # 🚀 ONE-COMMAND DEPLOYMENT - Start here!
+├── main.py              # Configuration entry point
+├── restart.sh           # Quick service restart
 ├── scripts/              # Production scripts (feature-based organization)
 │   ├── deployment/          # 🔧 Initial setup and deployment
-│   │   ├── initialize_restaurant.py  # Interactive wizard: location + cameras
+│   │   ├── initialize_restaurant.py  # Configuration wizard
+│   │   ├── interactive_start.py      # Library: InteractiveStartup class
 │   │   ├── migrate_database.py       # Database schema migration
 │   │   └── DEPLOYMENT_GUIDE.md       # Complete deployment instructions
 │   ├── database_sync/       # 📊 Database and cloud synchronization
@@ -734,6 +762,32 @@ systemd (Production Startup)
 - Old: `interactive_start.py` → New: `main.py --configure`
 - Old: Basic `initialize_restaurant.py` → New: Full-featured configuration wizard
 
+### 5. Simplified Deployment v4.1 (2025-12-13)
+**Files:** `deploy.sh` (new), `restart.sh` (renamed), `interactive_start.py` (moved)
+
+**Changes:**
+- ✅ Added `deploy.sh` - One-command production deployment
+- ✅ Renamed `restart_service.sh` → `restart.sh` (easier to type)
+- ✅ Moved `interactive_start.py` to `scripts/deployment/` (it's a library, not entry point)
+- ✅ Added daily reboot at 23:00 (system health maintenance)
+- ✅ Updated all documentation
+
+**New Architecture:**
+```
+eyesofsmartice/
+├── deploy.sh      # sudo ./deploy.sh - does everything
+├── main.py        # Configuration menu
+├── restart.sh     # Quick restart
+└── scripts/deployment/
+    ├── initialize_restaurant.py  # Config wizard
+    └── interactive_start.py      # Library (InteractiveStartup class)
+```
+
+**Benefits:**
+- 🎯 One command to remember: `sudo ./deploy.sh`
+- 🔄 Daily reboot at 23:00 keeps system healthy
+- 📁 Clean root directory (only entry scripts)
+
 ---
 
 ## Next Steps for Production
@@ -742,7 +796,8 @@ systemd (Production Startup)
 2. ✅ **Robust Startup** - Shell wrapper and systemd service implemented
 3. ✅ **Credential Configuration** - Initialization wizard updated
 4. ✅ **Architecture Refactoring** - v4.0 complete (main.py + clear separation)
-5. ⏳ **ROI Configuration** - Set up table/region polygons for detection
-6. ⏳ **Cloud Upload Pipeline** - Results to Supabase after processing
-7. ⏳ **Monitoring Dashboard** - Real-time status, GPU usage, disk space
-8. ⏳ **Database Cleanup** - Auto-rotate old sessions, compress screenshots
+5. ✅ **Simplified Deployment** - v4.1 complete (deploy.sh + daily reboot)
+6. ⏳ **ROI Configuration** - Set up table/region polygons for detection
+7. ⏳ **Cloud Upload Pipeline** - Results to Supabase after processing
+8. ⏳ **Monitoring Dashboard** - Real-time status, GPU usage, disk space
+9. ⏳ **Database Cleanup** - Auto-rotate old sessions, compress screenshots

@@ -1,7 +1,7 @@
 # Scripts Organization Guide
 
-**Version:** 1.0.0
-**Last Updated:** 2025-11-16
+**Version:** 1.2.0
+**Last Updated:** 2025-12-13
 
 This document provides a detailed navigation guide for the feature-based organization of the `scripts/` directory.
 
@@ -11,17 +11,25 @@ This document provides a detailed navigation guide for the feature-based organiz
 
 ```
 scripts/
+├── CLAUDE.md                 # Documentation index
 ├── STRUCTURE.md              # This file - navigation guide
 ├── camera_testing/           # Camera connection validation
 ├── config/                   # Centralized configuration files
 ├── database_sync/            # Database operations and cloud sync
+│   └── CLAUDE.md             # Algorithm documentation
 ├── deployment/               # Initial setup and deployment
+│   └── CLAUDE.md             # Algorithm documentation
 ├── maintenance/              # System cleanup and maintenance
+│   └── CLAUDE.md             # Algorithm documentation
 ├── monitoring/               # Health monitoring and alerts
+│   └── CLAUDE.md             # Algorithm documentation
 ├── orchestration/            # Multi-camera batch processing
+│   └── CLAUDE.md             # Algorithm documentation
 ├── time_sync/                # Time synchronization
 ├── video_capture/            # RTSP stream recording
+│   └── CLAUDE.md             # Algorithm documentation
 └── video_processing/         # AI detection and analysis
+    └── CLAUDE.md             # Algorithm documentation
 ```
 
 ---
@@ -66,6 +74,8 @@ All configuration files use JSON format for easy parsing and editing.
 
 **Purpose:** Database operations and cloud synchronization
 
+**Documentation:** [CLAUDE.md](database_sync/CLAUDE.md) - Batch writing, SQLite transactions, Supabase sync algorithms
+
 **Scripts:**
 - `batch_db_writer.py` - High-performance batch insert (100× faster than individual inserts)
 - `sync_to_supabase.py` - Hourly cloud sync to Supabase
@@ -87,18 +97,22 @@ All configuration files use JSON format for easy parsing and editing.
 
 **Purpose:** Initial setup and deployment automation
 
+**Documentation:** [CLAUDE.md](deployment/CLAUDE.md) - Configuration wizard, camera management, ROI scaling, database migration
+
 **Scripts:**
-- `initialize_restaurant.py` - Interactive setup wizard (location + cameras)
+- `initialize_restaurant.py` - Configuration wizard (calls interactive_start.py)
+- `interactive_start.py` - Library: InteractiveStartup class for configuration
 - `migrate_database.py` - Database schema migration
 - `install_cron_jobs.sh` - Install automated scheduling (cron)
-- `install_service.sh` - Install systemd service for auto-start
+- `install_systemd.sh` - Install systemd daemon service
 - `ase_surveillance.service` - Systemd service configuration
 
 **Workflow:**
-1. Run `migrate_database.py` to set up database schema
-2. Run `initialize_restaurant.py` to configure location and cameras
-3. Run `install_cron_jobs.sh` to set up automated tasks
-4. Run `install_service.sh` to enable auto-start on boot
+1. Run `sudo ./deploy.sh` from project root (one-command deployment)
+   - Or manually: Run `migrate_database.py` to set up database schema
+   - Run `initialize_restaurant.py` to configure location and cameras
+   - Run `install_cron_jobs.sh` to set up automated tasks
+   - Run `install_systemd.sh` to enable auto-start on boot
 
 **When to use:**
 - First-time deployment
@@ -110,6 +124,8 @@ All configuration files use JSON format for easy parsing and editing.
 ### 🧹 maintenance/
 
 **Purpose:** System cleanup and maintenance
+
+**Documentation:** [CLAUDE.md](maintenance/CLAUDE.md) - Retention algorithms, cleanup policies, safe deletion logic
 
 **Scripts:**
 - `cleanup_old_videos.sh` - Delete old raw and processed videos (2-day retention)
@@ -136,6 +152,8 @@ All configuration files use JSON format for easy parsing and editing.
 
 **Purpose:** System health monitoring and alerts
 
+**Documentation:** [CLAUDE.md](monitoring/CLAUDE.md) - Disk prediction, GPU monitoring, 9-level health diagnostics
+
 **Scripts:**
 - `check_disk_space.py` - Predictive disk space monitoring with auto-cleanup
 - `monitor_gpu.py` - GPU temperature and utilization tracking
@@ -161,6 +179,8 @@ All configuration files use JSON format for easy parsing and editing.
 ### 🎯 orchestration/
 
 **Purpose:** Multi-camera batch processing coordination
+
+**Documentation:** [CLAUDE.md](orchestration/CLAUDE.md) - GPU scaling, queue management, service lifecycle, failure recovery
 
 **Scripts:**
 - `process_videos_orchestrator.py` - Dynamic GPU scaling, batch processing
@@ -209,6 +229,8 @@ Critical for accurate timestamp recording and scheduled task execution.
 
 **Purpose:** RTSP stream recording
 
+**Documentation:** [CLAUDE.md](video_capture/CLAUDE.md) - RTSP connection, 60s segmentation, PIPE deadlock fix, multi-threading
+
 **Scripts:**
 - `capture_rtsp_streams.py` - Multi-camera RTSP capture with FPS-based disconnect detection
 
@@ -234,6 +256,8 @@ Critical for accurate timestamp recording and scheduled task execution.
 ### 🤖 video_processing/
 
 **Purpose:** AI detection and analysis
+
+**Documentation:** [CLAUDE.md](video_processing/CLAUDE.md) - Two-stage detection, debouncing, ROI management, state machines
 
 **Scripts:**
 - `table_and_region_state_detection.py` - Main detection pipeline (two-stage detection)
@@ -271,20 +295,24 @@ Output (H.264 video, SQLite database, screenshots)
 ### First-Time Deployment
 
 ```bash
+# One-command deployment (recommended)
+sudo ./deploy.sh
+
+# Or manual step-by-step:
 # 1. Database migration
 python3 scripts/deployment/migrate_database.py --backup
 
 # 2. Initialize location and cameras
-python3 scripts/deployment/initialize_restaurant.py
+python3 main.py --configure
 
 # 3. Install automated scheduling
 bash scripts/deployment/install_cron_jobs.sh --install
 
-# 4. Install systemd service (optional - for auto-start on boot)
-sudo bash scripts/deployment/install_service.sh
+# 4. Install systemd service
+sudo bash scripts/deployment/install_systemd.sh
 
-# 5. Start the automated service
-python3 start.py
+# 5. Start the service
+sudo systemctl start ase_surveillance
 ```
 
 ### Manual Video Processing
@@ -392,6 +420,8 @@ When adding new scripts, follow this structure:
 
 ## Version History
 
+- **1.2.0** (2025-12-13): Added CLAUDE.md documentation references to all directory sections
+- **1.1.0** (2025-12-13): Added interactive_start.py to deployment/, updated workflows for deploy.sh
 - **1.0.0** (2025-11-16): Initial creation, comprehensive documentation of all script directories
 
 ---

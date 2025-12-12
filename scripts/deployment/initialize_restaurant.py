@@ -20,12 +20,11 @@ After configuration:
     sudo systemctl start ase_surveillance
 """
 
-# Import the interactive wizard (keep all configuration code)
+# Import the interactive wizard (now in same directory)
 import sys
 from pathlib import Path
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 
+# Same directory import (both files in scripts/deployment/)
 from interactive_start import InteractiveStartup, Colors
 
 class SystemConfiguration(InteractiveStartup):
